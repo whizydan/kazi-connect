@@ -36,11 +36,13 @@ export function RegistrationForm() {
   const onSubmit = async (data) => {
     console.log("Form submitted:", data);
     setLoading(true)
+    const toastL = toast.loading("signing you up... ");
     await apiClient.post('/register', data)
     .then((res)=>{
         navigate('/login');
     }).catch((res)=>{
       console.log(res);
+      toast.dismiss(toastL);
       toast.error(res.message)
     })
     setLoading(false)
