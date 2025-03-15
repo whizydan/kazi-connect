@@ -64,7 +64,7 @@ export function AppNewSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
         </div>
 
         {/* Rating Filter */}
-        <div>
+        <div className="w-full">
           <Label className="text-sm font-medium">Minimum Rating</Label>
           <Select onValueChange={(value) => setMinRating(Number(value))}>
             <SelectTrigger>

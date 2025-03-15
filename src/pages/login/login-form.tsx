@@ -8,7 +8,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
-import axios from "axios";
+import apiClient from "@/lib/api-client";
+import { useNavigate } from "react-router";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -16,6 +17,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -29,9 +31,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     console.log(values);
     setLoading(true);
     const toastL = toast.loading("Signin in... ");
-    await axios.post('/login',values)
+    await apiClient.post('/login',values)
     .then((res)=>{
       toast.dismiss(toastL);
+      navigate('/');
     })
     .catch((res)=>{
       toast.dismiss(toastL);
@@ -77,6 +80,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 )}
               />
               <Button disabled={loading} type="submit" className="w-full">Login</Button>
+              <div className="justify-content-middle">
+                <p>Don't have an account <a href='/register'>Register</a></p>
+              </div>
             </form>
           </Form>
           <div className="relative hidden bg-muted md:block">

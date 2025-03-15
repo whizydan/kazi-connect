@@ -6,56 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ChevronLeft, ChevronRight, Search, Star } from "lucide-react";
 import { ServiceProviderModal } from "./pages/provider-details";
+import serviceProviders from "./assets/MOCK_DATA.json";
+import apiClient from "./lib/api-client";
 
-const serviceProviders = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    service: "Maid",
-    location: "Nairobi",
-    rating: 4.5,
-    profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
-    phone: "+254 712 345 678",
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    service: "Plumber",
-    location: "Mombasa",
-    rating: 4.2,
-    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
-    phone: "+254 733 456 789",
-  },
-  {
-    id: 3,
-    name: "Mary Smith",
-    service: "Handyman",
-    location: "Kisumu",
-    rating: 4.7,
-    profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
-    phone: "+254 721 123 456",
-  },
-  {
-    id: 4,
-    name: "James Brown",
-    service: "Electrician",
-    location: "Eldoret",
-    rating: 4.3,
-    profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-    phone: "+254 722 987 654",
-  },
-  {
-    id: 5,
-    name: "Susan Lee",
-    service: "Maid",
-    location: "Nakuru",
-    rating: 4.6,
-    profileImage: "https://randomuser.me/api/portraits/women/5.jpg",
-    phone: "+254 700 456 789",
-  },
-];
+interface ServiceProvider{
+  id: number
+    name: string,
+    service: string,
+    location: string,
+    rating: number,
+    profileImage: string,
+    phone: string,
+}
 
-const ITEMS_PER_PAGE = 3;
+
+
+const ITEMS_PER_PAGE = 6;
 
 export default function App() {
   const [view, setView] = useState("grid");
@@ -63,11 +29,21 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<ServiceProvider | null>(null);
+  const [data,setData] = useState(serviceProviders);
 
   // Filtered data based on search
-  const filteredData = serviceProviders.filter((sp) =>
+  const filteredData = data.filter((sp) =>
     sp.name.toLowerCase().includes(search.toLowerCase())
   );
+
+
+  apiClient.get('/providers')
+  .then((res)=>{
+      setData( res.data);
+  })
+  .catch((res)=>{
+    console.log(res);
+  })
 
   // Pagination logic
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);

@@ -7,9 +7,6 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import LoginPage from './pages/login/login-page.tsx'
 import LayoutPage from './layout/default.tsx'
 import { RegistrationForm } from './pages/register/register.tsx'
-import axios from 'axios'
-
-axios.defaults.baseURL = 'https://api.example.com';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

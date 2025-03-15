@@ -6,6 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { toast, Toaster } from "sonner";
+import apiClient from "@/lib/api-client";
+import { Navigate, useNavigate } from "react-router";
+import { useState } from "react";
 
 const registrationSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -16,6 +20,8 @@ const registrationSchema = z.object({
 });
 
 export function RegistrationForm() {
+  const navigate = useNavigate();
+  const [loading,setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -27,8 +33,17 @@ export function RegistrationForm() {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Form submitted:", data);
+    setLoading(true)
+    await apiClient.post('/register', data)
+    .then((res)=>{
+        navigate('/login');
+    }).catch((res)=>{
+      console.log(res);
+      toast.error(res.message)
+    })
+    setLoading(false)
   };
 
   return (
@@ -81,7 +96,7 @@ export function RegistrationForm() {
                 </FormItem>
               )} />
 
-              <Button type="submit" className="w-full bg-primary text-white rounded-md">
+              <Button disabled={loading} type="submit" className="w-full bg-primary text-white rounded-md">
                 Register
               </Button>
 
@@ -92,6 +107,7 @@ export function RegistrationForm() {
           </Form>
         </CardContent>
       </Card>
+      <Toaster />
     </div>
   );
 }
